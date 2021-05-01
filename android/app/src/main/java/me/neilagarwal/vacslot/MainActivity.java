@@ -1,4 +1,4 @@
-package com.vacslot;
+package me.neilagarwal.vacslot;
 
 import com.facebook.react.ReactActivity;
 
