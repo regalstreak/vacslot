@@ -1,0 +1,10 @@
+{
+    "root": true,
+    "extends": ["@react-native-community", "plugin:react-hooks/recommended"],
+    "rules": {
+        "jsx-quotes": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "react-native/no-inline-styles": "off"
+    }
+}
