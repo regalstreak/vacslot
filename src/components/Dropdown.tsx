@@ -127,7 +127,6 @@ export const Dropdown = (props: IDropdownProps) => {
                         mode={mode}
                         label={label}
                         placeholder={placeholder}
-                        pointerEvents='none'
                         theme={theme}
                         onTouchStart={onPaperTextInputTouchStart}
                         onChangeText={onPaperTextInputChangeText}
@@ -135,7 +134,7 @@ export const Dropdown = (props: IDropdownProps) => {
                             inputProps?.right ? (
                                 inputProps?.right
                             ) : (
-                                <PaperTextInput.Icon name={'menu-down'} />
+                                <PaperTextInput.Icon name='menu-down' />
                             )
                         }
                         {...inputProps}
