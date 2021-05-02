@@ -1,1 +1,1 @@
-// placeholder
+declare module 'lodash.debounce';

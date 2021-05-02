@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "react": "17.0.1",
     "react-native": "0.64.0",
     "react-native-paper": "^4.8.1",

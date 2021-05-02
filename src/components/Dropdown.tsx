@@ -3,6 +3,7 @@ import {
     LayoutChangeEvent,
     ScrollView,
     StyleProp,
+    StyleSheet,
     View,
     ViewStyle,
 } from 'react-native';
@@ -33,6 +34,7 @@ export interface IDropdownProps {
     dropDownContainerMaxHeight?: number;
     activeColor?: string;
     theme?: Theme;
+    containerStyle?: StyleProp<ViewStyle>;
     setValue: (value: IDropdownItem) => void;
     onDismiss?: () => void;
 }
@@ -53,6 +55,7 @@ export const Dropdown = (props: IDropdownProps) => {
         dropdownItems,
         dropDownContainerMaxHeight,
         theme,
+        containerStyle,
     } = props;
 
     const [inputLayout, setInputLayout] = useState({
@@ -76,10 +79,12 @@ export const Dropdown = (props: IDropdownProps) => {
     const onPaperTextInputChangeText = useCallback(
         (text: string) => {
             setSearchText(text);
+
             if (!text) {
                 setFilterItems(dropdownItems);
                 return;
             }
+
             const listToFilter =
                 filterItems && filterItems?.length > 0
                     ? filterItems
@@ -105,6 +110,7 @@ export const Dropdown = (props: IDropdownProps) => {
             width: inputLayout?.width,
             top: inputLayout?.y + inputLayout?.height,
             zIndex: 100,
+            flex: 1,
         };
     }, [dropDownContainerMaxHeight, inputLayout]);
 
@@ -123,7 +129,7 @@ export const Dropdown = (props: IDropdownProps) => {
     );
 
     return (
-        <>
+        <View style={containerStyle}>
             <View onLayout={onLayout}>
                 <PaperTextInput
                     value={searchText}
@@ -155,6 +161,7 @@ export const Dropdown = (props: IDropdownProps) => {
                 <ScrollView
                     keyboardShouldPersistTaps='handled'
                     style={scrollViewStyle}
+                    nestedScrollEnabled
                 >
                     {filterItems?.map((item, index) => {
                         return (
@@ -180,6 +187,6 @@ export const Dropdown = (props: IDropdownProps) => {
                     })}
                 </ScrollView>
             )}
-        </>
+        </View>
     );
 };

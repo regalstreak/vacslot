@@ -41,8 +41,12 @@ const fetchDistricts = async (
 };
 
 export const useDistricts = (stateId?: IState['state_id']) => {
-    const districtsQuery = useQuery(fetchDistrictsQueryKey, () =>
-        fetchDistricts(stateId),
+    const districtsQuery = useQuery(
+        fetchDistrictsQueryKey,
+        () => fetchDistricts(stateId),
+        {
+            enabled: false,
+        },
     );
     return {
         districtsQuery,
