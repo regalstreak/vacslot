@@ -1,3 +1,4 @@
+import { IDropdownItem } from './../components/Dropdown';
 import { API_BASE_URL, API_ENDPOINTS, API_HEADERS } from './../constants/api';
 import { useQuery } from 'react-query';
 
@@ -13,6 +14,16 @@ export interface IFetchStates {
 
 const fetchStatesQueryKey = 'FETCH_STATES';
 
+const getStatesDropdownItems = (states?: IState[]): IDropdownItem[] => {
+    if (!states) {
+        return [];
+    }
+    return states?.map(state => ({
+        value: state.state_name,
+        id: state.state_id,
+    }));
+};
+
 const fetchStates = async (): Promise<IFetchStates> => {
     const states = await fetch(
         `${API_BASE_URL}${API_ENDPOINTS.LOCATION_STATES}`,
@@ -25,5 +36,8 @@ const fetchStates = async (): Promise<IFetchStates> => {
 
 export const useStates = () => {
     const statesQuery = useQuery(fetchStatesQueryKey, fetchStates);
-    return statesQuery;
+    return {
+        statesQuery,
+        statesDropdownItems: getStatesDropdownItems(statesQuery.data?.states),
+    };
 };

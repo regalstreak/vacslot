@@ -16,23 +16,24 @@ import { TextInputProps } from 'react-native-paper/lib/typescript/components/Tex
 
 type Without<T, K> = Pick<T, Exclude<keyof T, K>>;
 
-export interface IListItem {
-    label: string;
+export interface IDropdownItem {
     value: string | number;
+    id?: number;
+    label?: string;
     custom?: ReactNode;
 }
 
 export interface IDropdownProps {
-    value: string | number | undefined;
+    selectedDropdownItem: IDropdownItem | undefined;
     label?: string | undefined;
     placeholder?: string | undefined;
     mode?: 'outlined' | 'flat' | undefined;
     inputProps?: TTextInputPropsWithoutTheme;
-    listItems: IListItem[];
+    dropdownItems: IDropdownItem[] | undefined;
     dropDownContainerMaxHeight?: number;
     activeColor?: string;
     theme?: Theme;
-    setValue: (value: string | number) => void;
+    setValue: (value: IDropdownItem) => void;
     onDismiss?: () => void;
 }
 
@@ -42,14 +43,14 @@ export const Dropdown = (props: IDropdownProps) => {
     const activeTheme = useTheme();
     const {
         onDismiss,
-        value,
+        selectedDropdownItem,
         setValue,
         activeColor,
         mode,
         label,
         placeholder,
         inputProps,
-        listItems: list,
+        dropdownItems,
         dropDownContainerMaxHeight,
         theme,
     } = props;
@@ -62,7 +63,7 @@ export const Dropdown = (props: IDropdownProps) => {
     });
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [searchText, setSearchText] = useState<string>();
-    const [filterItems, setFilterItems] = useState(list);
+    const [filterItems, setFilterItems] = useState(dropdownItems);
 
     const onLayout = useCallback((event: LayoutChangeEvent) => {
         setInputLayout(event.nativeEvent.layout);
@@ -76,12 +77,15 @@ export const Dropdown = (props: IDropdownProps) => {
         (text: string) => {
             setSearchText(text);
             if (!text) {
-                setFilterItems(list);
+                setFilterItems(dropdownItems);
                 return;
             }
-            const listToFilter = filterItems.length > 0 ? filterItems : list;
+            const listToFilter =
+                filterItems && filterItems?.length > 0
+                    ? filterItems
+                    : dropdownItems;
             setFilterItems(
-                listToFilter.filter(l =>
+                listToFilter?.filter(l =>
                     l.value
                         .toString()
                         .toLowerCase()
@@ -89,7 +93,7 @@ export const Dropdown = (props: IDropdownProps) => {
                 ),
             );
         },
-        [filterItems, list],
+        [filterItems, dropdownItems],
     );
 
     const menuStyle: StyleProp<ViewStyle> = useMemo(() => {
@@ -107,7 +111,7 @@ export const Dropdown = (props: IDropdownProps) => {
 
     const onMenuItemPress = useCallback(
         item => {
-            setValue(item.value);
+            setValue(item);
             setSearchText(item.label ?? item.value);
             setIsDropdownVisible(false);
             onDropdownDismiss();
@@ -147,13 +151,13 @@ export const Dropdown = (props: IDropdownProps) => {
                 keyboardShouldPersistTaps='handled'
                 style={{ maxHeight: dropDownContainerMaxHeight || 200 }}
             >
-                {filterItems.map((item, index) => {
+                {filterItems?.map((item, index) => {
                     return (
                         <Menu.Item
                             key={index}
                             titleStyle={{
                                 color:
-                                    value === item.value
+                                    selectedDropdownItem?.value === item.value
                                         ? activeColor ||
                                           (theme || activeTheme).colors.primary
                                         : (theme || activeTheme).colors.text,
@@ -161,7 +165,7 @@ export const Dropdown = (props: IDropdownProps) => {
                             onPress={() => {
                                 onMenuItemPress(item);
                             }}
-                            title={item.custom || item.label}
+                            title={item.custom ?? item.label ?? item.value}
                             style={{ maxWidth: inputLayout?.width }}
                         />
                     );

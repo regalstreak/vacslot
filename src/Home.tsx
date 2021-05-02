@@ -1,34 +1,44 @@
-import React, { useState } from 'react';
-import { Text, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
-import { Dropdown } from './components/Dropdown';
-
-const listItems = [
-    { label: 'Others', value: 'others' },
-    { label: 'Apples', value: 'apples' },
-    { label: 'Oranges', value: 'oranges' },
-];
+import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import { Dropdown, IDropdownItem } from './components/Dropdown';
+import { useDistricts } from './hooks/useDistricts';
+import { useStates } from './hooks/useStates';
 
 export const Home = () => {
-    const [fruit, setFruit] = useState<string>();
+    const [selectedState, setSelectedState] = useState<IDropdownItem>();
+    const [selectedDistrict, setSelectedDistrict] = useState<IDropdownItem>();
+    const { statesDropdownItems } = useStates();
+    const { districtsDropdownItems } = useDistricts(selectedDistrict?.id);
+
     return (
         <View
             style={{
                 margin: 20,
             }}
         >
-            <Text>testing</Text>
             <Dropdown
-                label='Fruit'
+                label='State'
                 mode='outlined'
-                value={fruit}
-                setValue={value => {
-                    setFruit(value as string);
-                }}
-                listItems={listItems}
+                selectedDropdownItem={selectedState}
+                setValue={setSelectedState}
+                dropdownItems={statesDropdownItems}
             />
-            <TextInput label='testing label' mode='outlined' />
-            <TextInput label='testing label' mode='outlined' />
+            <View style={{ marginTop: 200 }}>
+                {/* <Dropdown
+                    label='District'
+                    mode='outlined'
+                    selectedDropdownItem={selectedDistrict}
+                    setValue={setSelectedDistrict}
+                    dropdownItems={districtsDropdownItems}
+                /> */}
+                <Dropdown
+                    label='State'
+                    mode='outlined'
+                    selectedDropdownItem={selectedState}
+                    setValue={setSelectedState}
+                    dropdownItems={statesDropdownItems}
+                />
+            </View>
         </View>
     );
 };
