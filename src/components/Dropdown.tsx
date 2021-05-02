@@ -70,8 +70,8 @@ export const Dropdown = (props: IDropdownProps) => {
     }, []);
 
     const onPaperTextInputTouchStart = useCallback(() => {
-        setIsDropdownVisible(true);
-    }, []);
+        setIsDropdownVisible(!isDropdownVisible);
+    }, [isDropdownVisible]);
 
     const onPaperTextInputChangeText = useCallback(
         (text: string) => {
@@ -96,14 +96,17 @@ export const Dropdown = (props: IDropdownProps) => {
         [filterItems, dropdownItems],
     );
 
-    const menuStyle: StyleProp<ViewStyle> = useMemo(() => {
+    const scrollViewStyle: StyleProp<ViewStyle> = useMemo(() => {
         return {
-            maxWidth: inputLayout?.width,
+            maxHeight: dropDownContainerMaxHeight || 200,
+            position: 'absolute',
+            backgroundColor: 'white',
+            left: inputLayout?.x,
             width: inputLayout?.width,
-            marginTop: inputLayout?.height,
-            alignItems: 'stretch',
+            top: inputLayout?.y + inputLayout?.height,
+            zIndex: 100,
         };
-    }, [inputLayout?.height, inputLayout?.width]);
+    }, [dropDownContainerMaxHeight, inputLayout]);
 
     const onDropdownDismiss = useCallback(() => {
         onDismiss && onDismiss();
@@ -120,57 +123,63 @@ export const Dropdown = (props: IDropdownProps) => {
     );
 
     return (
-        <Menu
-            visible={isDropdownVisible}
-            onDismiss={onDropdownDismiss}
-            theme={theme}
-            anchor={
-                <View onLayout={onLayout}>
-                    <PaperTextInput
-                        value={searchText}
-                        mode={mode}
-                        label={label}
-                        placeholder={placeholder}
-                        theme={theme}
-                        onTouchStart={onPaperTextInputTouchStart}
-                        onChangeText={onPaperTextInputChangeText}
-                        right={
-                            inputProps?.right ? (
-                                inputProps?.right
-                            ) : (
-                                <PaperTextInput.Icon name='menu-down' />
-                            )
-                        }
-                        {...inputProps}
-                    />
-                </View>
-            }
-            style={menuStyle}
-        >
-            <ScrollView
-                keyboardShouldPersistTaps='handled'
-                style={{ maxHeight: dropDownContainerMaxHeight || 200 }}
-            >
-                {filterItems?.map((item, index) => {
-                    return (
-                        <Menu.Item
-                            key={index}
-                            titleStyle={{
-                                color:
-                                    selectedDropdownItem?.value === item.value
-                                        ? activeColor ||
-                                          (theme || activeTheme).colors.primary
-                                        : (theme || activeTheme).colors.text,
-                            }}
-                            onPress={() => {
-                                onMenuItemPress(item);
-                            }}
-                            title={item.custom ?? item.label ?? item.value}
-                            style={{ maxWidth: inputLayout?.width }}
-                        />
-                    );
-                })}
-            </ScrollView>
-        </Menu>
+        <>
+            <View onLayout={onLayout}>
+                <PaperTextInput
+                    value={searchText}
+                    mode={mode}
+                    label={label}
+                    placeholder={placeholder}
+                    theme={theme}
+                    onTouchStart={onPaperTextInputTouchStart}
+                    onBlur={() => {
+                        setIsDropdownVisible(false);
+                    }}
+                    onChangeText={onPaperTextInputChangeText}
+                    right={
+                        inputProps?.right ? (
+                            inputProps?.right
+                        ) : (
+                            <PaperTextInput.Icon
+                                name={
+                                    isDropdownVisible ? 'menu-up' : 'menu-down'
+                                }
+                                onPress={onPaperTextInputTouchStart}
+                            />
+                        )
+                    }
+                    {...inputProps}
+                />
+            </View>
+            {isDropdownVisible && (
+                <ScrollView
+                    keyboardShouldPersistTaps='handled'
+                    style={scrollViewStyle}
+                >
+                    {filterItems?.map((item, index) => {
+                        return (
+                            <Menu.Item
+                                key={index}
+                                titleStyle={{
+                                    color:
+                                        selectedDropdownItem?.value ===
+                                        item.value
+                                            ? activeColor ||
+                                              (theme || activeTheme).colors
+                                                  .primary
+                                            : (theme || activeTheme).colors
+                                                  .text,
+                                }}
+                                onPress={() => {
+                                    onMenuItemPress(item);
+                                }}
+                                title={item.custom ?? item.label ?? item.value}
+                                style={{ maxWidth: inputLayout?.width }}
+                            />
+                        );
+                    })}
+                </ScrollView>
+            )}
+        </>
     );
 };

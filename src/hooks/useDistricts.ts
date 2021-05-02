@@ -21,6 +21,7 @@ const getDistrictsDropdownItems = (
     if (!districts) {
         return [];
     }
+
     return districts?.map(state => ({
         value: state.district_name,
         id: state.district_id,
