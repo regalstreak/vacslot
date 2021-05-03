@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
-import { Button, DataTable } from 'react-native-paper';
+import { Button, DataTable, Divider } from 'react-native-paper';
 import { Dropdown, IDropdownItem } from 'src/components/Dropdown';
 import { useDistricts } from 'src/hooks/useDistricts';
 import { useSlots } from 'src/hooks/useSlots';
@@ -8,19 +8,18 @@ import { useStates } from 'src/hooks/useStates';
 import {
     AsyncStorageKeys,
     getAsyncStorageItem,
-    setAsyncStorageItem,
+    INotificationStore,
+    ISettingsStore,
+    setNotificationStore,
+    setSettingsStore,
 } from 'src/utils/asyncStorageUtils';
-
-export interface ISettings {
-    hideAbove45: boolean;
-    state?: IDropdownItem;
-    district?: IDropdownItem;
-}
 
 export const Home = () => {
     const [selectedState, setSelectedState] = useState<IDropdownItem>();
     const [selectedDistrict, setSelectedDistrict] = useState<IDropdownItem>();
     const [hideAbove45, setHideAbove45] = useState(true);
+    const [lastChecked, setLastChecked] = useState<string>();
+    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
     const { statesDropdownItems } = useStates();
     const { districtsQuery, districtsDropdownItems } = useDistricts(
@@ -46,26 +45,37 @@ export const Home = () => {
     }, [selectedDistrict, hideAbove45]);
 
     useEffect(() => {
+        const setLastCheckedDate = async () => {
+            const notificationStore: INotificationStore = await getAsyncStorageItem(
+                AsyncStorageKeys.NOTIFICATION,
+            );
+            setLastChecked(notificationStore.lastChecked);
+        };
+        setLastCheckedDate();
+    }, []);
+
+    useEffect(() => {
         const getSettings = async () => {
-            const settings: ISettings = await getAsyncStorageItem(
+            const settingsStore: ISettingsStore = await getAsyncStorageItem(
                 AsyncStorageKeys.SETTINGS,
             );
-            setSelectedState(settings.state);
-            setSelectedDistrict(settings.district);
-            setHideAbove45(settings.hideAbove45);
+            setSelectedState(settingsStore.state);
+            setSelectedDistrict(settingsStore.district);
+            setHideAbove45(settingsStore.hideAbove45);
+            setNotificationsEnabled(settingsStore.notificationsEnabled);
         };
 
         getSettings();
     }, []);
 
     useEffect(() => {
-        const settings: ISettings = {
+        setSettingsStore({
             state: selectedState,
             district: selectedDistrict,
             hideAbove45,
-        };
-        setAsyncStorageItem(AsyncStorageKeys.SETTINGS, settings);
-    }, [hideAbove45, selectedDistrict, selectedState]);
+            notificationsEnabled,
+        });
+    }, [hideAbove45, notificationsEnabled, selectedDistrict, selectedState]);
 
     return (
         <>
@@ -93,31 +103,26 @@ export const Home = () => {
                         dropdownItems={districtsDropdownItems}
                     />
                 </View>
-                <View style={styles.minAgeSwitch}>
-                    <Text style={styles.minAgeSwitchText} numberOfLines={1}>
-                        Hide results having minimum age 45
-                    </Text>
-                    <Switch
-                        onValueChange={setHideAbove45}
-                        value={hideAbove45}
-                    />
-                </View>
                 <ScrollView>
-                    <View>
-                        <Button mode='outlined'>
-                            <Text>Notify when a slot is available</Text>
-                        </Button>
-                        <Text
-                            style={{
-                                textAlign: 'right',
-                                fontSize: 12,
-                                marginTop: 4,
-                            }}
-                        >
-                            Last checked: {new Date().toLocaleDateString()}{' '}
-                            {new Date().toLocaleTimeString()}
+                    <View style={styles.minAgeSwitch}>
+                        <Text style={styles.minAgeSwitchText} numberOfLines={1}>
+                            Hide results having minimum age 45
                         </Text>
+                        <Switch
+                            onValueChange={setHideAbove45}
+                            value={hideAbove45}
+                        />
                     </View>
+                    <View style={styles.minAgeSwitch}>
+                        <Text style={styles.minAgeSwitchText} numberOfLines={1}>
+                            Notify when slots are available
+                        </Text>
+                        <Switch
+                            onValueChange={setNotificationsEnabled}
+                            value={notificationsEnabled}
+                        />
+                    </View>
+                    <Divider />
                     {slotsQuery?.data?.centers &&
                     slotsQuery.data?.centers?.length > 0 ? (
                         slotsQuery.data?.centers?.map((center, centerIndex) => {

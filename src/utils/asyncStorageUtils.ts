@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IDropdownItem } from 'src/components/Dropdown';
 
 export enum AsyncStorageKeys {
     SETTINGS = '@Settings',
+    NOTIFICATION = '@Notification',
 }
 
 export const getAsyncStorageItem = async (
@@ -23,7 +25,7 @@ export const getAsyncStorageItem = async (
     }
 };
 
-export const setAsyncStorageItem = async (
+const setAsyncStorageItem = async (
     key: AsyncStorageKeys,
     value: any,
     callback?: (error?: Error) => void,
@@ -51,4 +53,26 @@ export const removeAsyncStorageItem = async (
     } catch (error) {
         // Do nothing
     }
+};
+
+export interface INotificationStore {
+    notified: boolean;
+    lastChecked?: string;
+}
+
+export const setNotificationStore = async (
+    notificationStore: INotificationStore,
+) => {
+    await setAsyncStorageItem(AsyncStorageKeys.NOTIFICATION, notificationStore);
+};
+
+export interface ISettingsStore {
+    hideAbove45: boolean;
+    notificationsEnabled: boolean;
+    state?: IDropdownItem;
+    district?: IDropdownItem;
+}
+
+export const setSettingsStore = async (settingsStore: ISettingsStore) => {
+    await setAsyncStorageItem(AsyncStorageKeys.SETTINGS, settingsStore);
 };

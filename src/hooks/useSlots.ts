@@ -38,7 +38,7 @@ interface ISlotParams {
 
 const fetchSlotsQueryKey = 'FETCH_SLOTS';
 
-const fetchSlots = async ({
+export const fetchSlots = async ({
     districtId,
     pinCode,
     hideAbove45,
