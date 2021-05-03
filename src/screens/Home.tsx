@@ -5,17 +5,31 @@ import { Dropdown, IDropdownItem } from 'src/components/Dropdown';
 import { useDistricts } from 'src/hooks/useDistricts';
 import { useSlots } from 'src/hooks/useSlots';
 import { useStates } from 'src/hooks/useStates';
+import {
+    AsyncStorageKeys,
+    getAsyncStorageItem,
+    setAsyncStorageItem,
+} from 'src/utils/asyncStorageUtils';
+
+export interface ISettings {
+    hideAbove45: boolean;
+    state?: IDropdownItem;
+    district?: IDropdownItem;
+}
 
 export const Home = () => {
     const [selectedState, setSelectedState] = useState<IDropdownItem>();
     const [selectedDistrict, setSelectedDistrict] = useState<IDropdownItem>();
-    const [hideMinAge, setHideMinAge] = useState(true);
+    const [hideAbove45, setHideAbove45] = useState(true);
 
     const { statesDropdownItems } = useStates();
     const { districtsQuery, districtsDropdownItems } = useDistricts(
         selectedState?.id,
     );
-    const slotsQuery = useSlots({ districtId: selectedDistrict?.id });
+    const slotsQuery = useSlots({
+        districtId: selectedDistrict?.id,
+        hideAbove45,
+    });
 
     useEffect(() => {
         if (selectedState?.id) {
@@ -29,7 +43,29 @@ export const Home = () => {
             slotsQuery.refetch();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDistrict]);
+    }, [selectedDistrict, hideAbove45]);
+
+    useEffect(() => {
+        const getSettings = async () => {
+            const settings: ISettings = await getAsyncStorageItem(
+                AsyncStorageKeys.SETTINGS,
+            );
+            setSelectedState(settings.state);
+            setSelectedDistrict(settings.district);
+            setHideAbove45(settings.hideAbove45);
+        };
+
+        getSettings();
+    }, []);
+
+    useEffect(() => {
+        const settings: ISettings = {
+            state: selectedState,
+            district: selectedDistrict,
+            hideAbove45,
+        };
+        setAsyncStorageItem(AsyncStorageKeys.SETTINGS, settings);
+    }, [hideAbove45, selectedDistrict, selectedState]);
 
     return (
         <>
@@ -61,7 +97,10 @@ export const Home = () => {
                     <Text style={styles.minAgeSwitchText} numberOfLines={1}>
                         Hide results having minimum age 45
                     </Text>
-                    <Switch onValueChange={setHideMinAge} value={hideMinAge} />
+                    <Switch
+                        onValueChange={setHideAbove45}
+                        value={hideAbove45}
+                    />
                 </View>
                 <ScrollView>
                     <View>

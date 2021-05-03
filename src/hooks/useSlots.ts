@@ -33,6 +33,7 @@ export interface IFetchSlots {
 interface ISlotParams {
     districtId?: IDistrict['district_id'];
     pinCode?: string;
+    hideAbove45?: boolean;
 }
 
 const fetchSlotsQueryKey = 'FETCH_SLOTS';
@@ -40,6 +41,7 @@ const fetchSlotsQueryKey = 'FETCH_SLOTS';
 const fetchSlots = async ({
     districtId,
     pinCode,
+    hideAbove45,
 }: ISlotParams): Promise<IFetchSlots> => {
     const date = new Date()
         .toLocaleDateString('en-in', {
@@ -65,17 +67,35 @@ const fetchSlots = async ({
         queryParams.append('pincode', pinCode);
     }
 
-    const slots = await fetch(`${API_BASE_URL}${slotEndpoint}?${queryParams}`, {
-        headers: API_HEADERS,
-    });
+    const fetchedSlots: IFetchSlots = await (
+        await fetch(`${API_BASE_URL}${slotEndpoint}?${queryParams}`, {
+            headers: API_HEADERS,
+        })
+    ).json();
 
-    return slots.json();
+    let centers = fetchedSlots.centers.filter(
+        (center) =>
+            center.sessions.filter((session) => session.available_capacity > 0)
+                .length > 0,
+    );
+
+    if (hideAbove45) {
+        centers = centers.filter(
+            (center) =>
+                center.sessions.filter((session) => session.min_age_limit < 45)
+                    .length > 0,
+        );
+    }
+
+    return {
+        centers,
+    };
 };
 
-export const useSlots = ({ districtId, pinCode }: ISlotParams) => {
+export const useSlots = (slotParams: ISlotParams) => {
     const slotsQuery = useQuery(
-        fetchSlotsQueryKey,
-        () => fetchSlots({ districtId, pinCode }),
+        [fetchSlotsQueryKey, slotParams],
+        () => fetchSlots(slotParams),
         {
             enabled: false,
         },

@@ -1,9 +1,14 @@
-import React, { ReactNode, useCallback, useMemo, useState } from 'react';
+import React, {
+    ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
 import {
     LayoutChangeEvent,
     ScrollView,
     StyleProp,
-    StyleSheet,
     View,
     ViewStyle,
 } from 'react-native';
@@ -76,6 +81,13 @@ export const Dropdown = (props: IDropdownProps) => {
         setIsDropdownVisible(!isDropdownVisible);
     }, [isDropdownVisible]);
 
+    useEffect(() => {
+        setSearchText(
+            selectedDropdownItem?.label ??
+                selectedDropdownItem?.value.toString(),
+        );
+    }, [selectedDropdownItem?.label, selectedDropdownItem?.value]);
+
     const onPaperTextInputChangeText = useCallback(
         (text: string) => {
             setSearchText(text);
@@ -90,7 +102,7 @@ export const Dropdown = (props: IDropdownProps) => {
                     ? filterItems
                     : dropdownItems;
             setFilterItems(
-                listToFilter?.filter(l =>
+                listToFilter?.filter((l) =>
                     l.value
                         .toString()
                         .toLowerCase()
@@ -119,7 +131,7 @@ export const Dropdown = (props: IDropdownProps) => {
     }, [onDismiss]);
 
     const onMenuItemPress = useCallback(
-        item => {
+        (item) => {
             setValue(item);
             setSearchText(item.label ?? item.value);
             setIsDropdownVisible(false);
