@@ -96,7 +96,7 @@ export const Home = () => {
             >
                 <Text style={styles.title}>vacslot</Text>
                 <Text style={styles.subTitle}>
-                    The no-nonsense vaccine slot finder
+                    The no-nonsense vaccine slot notifier
                 </Text>
                 <View style={styles.controlsRow}>
                     <Dropdown
@@ -162,6 +162,11 @@ export const Home = () => {
 
                                     {center.sessions.map(
                                         (session, sessionIndex) => {
+                                            if (
+                                                session.available_capacity <= 0
+                                            ) {
+                                                return null;
+                                            }
                                             return (
                                                 <DataTable.Row
                                                     key={sessionIndex.toString()}
