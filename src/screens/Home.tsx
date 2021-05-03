@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import {
+    Linking,
+    ScrollView,
+    StyleSheet,
+    Switch,
+    Text,
+    View,
+} from 'react-native';
 import { DataTable, Divider } from 'react-native-paper';
 import { Dropdown, IDropdownItem } from 'src/components/Dropdown';
 import { useDistricts } from 'src/hooks/useDistricts';
@@ -78,12 +85,14 @@ export const Home = () => {
 
     return (
         <>
-            <View
-                style={{
-                    margin: 20,
-                    flex: 1,
-                }}
+            <ScrollView
+                style={styles.container}
+                keyboardShouldPersistTaps='handled'
             >
+                <Text style={styles.title}>vacslot</Text>
+                <Text style={styles.subTitle}>
+                    The no-nonsense vaccine slot finder
+                </Text>
                 <View style={styles.controlsRow}>
                     <Dropdown
                         containerStyle={{ flex: 0.48 }}
@@ -102,94 +111,145 @@ export const Home = () => {
                         dropdownItems={districtsDropdownItems}
                     />
                 </View>
-                <ScrollView>
-                    <View style={styles.minAgeSwitch}>
-                        <Text style={styles.minAgeSwitchText} numberOfLines={1}>
-                            Hide results having minimum age 45
-                        </Text>
-                        <Switch
-                            onValueChange={setHideAbove45}
-                            value={hideAbove45}
-                        />
-                    </View>
-                    <View style={styles.minAgeSwitch}>
-                        <Text style={styles.minAgeSwitchText} numberOfLines={1}>
-                            Notify when slots are available
-                        </Text>
-                        <Switch
-                            onValueChange={setNotificationsEnabled}
-                            value={notificationsEnabled}
-                        />
-                    </View>
-                    {lastChecked && <Text>Last Checked: {lastChecked} </Text>}
-                    <Divider />
-                    {slotsQuery?.data?.centers &&
-                    slotsQuery.data?.centers?.length > 0 ? (
-                        slotsQuery.data?.centers?.map((center, centerIndex) => {
-                            return (
-                                <View
-                                    key={centerIndex.toString()}
-                                    style={{ marginVertical: 20 }}
-                                >
-                                    <Text style={styles.centerName}>
-                                        {center.name}
-                                    </Text>
-                                    <DataTable>
-                                        <DataTable.Header>
-                                            <DataTable.Title>
-                                                Date
-                                            </DataTable.Title>
-                                            <DataTable.Title numeric>
-                                                Min Age
-                                            </DataTable.Title>
-                                            <DataTable.Title numeric>
-                                                Availablity
-                                            </DataTable.Title>
-                                        </DataTable.Header>
+                <View style={styles.minAgeSwitch}>
+                    <Text style={styles.minAgeSwitchText} numberOfLines={1}>
+                        Hide results having minimum age 45
+                    </Text>
+                    <Switch
+                        onValueChange={setHideAbove45}
+                        value={hideAbove45}
+                    />
+                </View>
+                <View style={styles.minAgeSwitch}>
+                    <Text style={styles.minAgeSwitchText} numberOfLines={1}>
+                        Notify when slots are available
+                    </Text>
+                    <Switch
+                        onValueChange={setNotificationsEnabled}
+                        value={notificationsEnabled}
+                    />
+                </View>
+                {lastChecked && <Text>Last Checked: {lastChecked} </Text>}
+                <Divider style={{ marginVertical: 20 }} />
+                {slotsQuery?.data?.centers &&
+                slotsQuery.data?.centers?.length > 0 ? (
+                    slotsQuery.data?.centers?.map((center, centerIndex) => {
+                        return (
+                            <View
+                                key={centerIndex.toString()}
+                                style={{ marginVertical: 20 }}
+                            >
+                                <Text style={styles.centerName}>
+                                    {center.name}
+                                </Text>
+                                <DataTable>
+                                    <DataTable.Header>
+                                        <DataTable.Title>Date</DataTable.Title>
+                                        <DataTable.Title numeric>
+                                            Min Age
+                                        </DataTable.Title>
+                                        <DataTable.Title numeric>
+                                            Availablity
+                                        </DataTable.Title>
+                                    </DataTable.Header>
 
-                                        {center.sessions.map(
-                                            (session, sessionIndex) => {
-                                                return (
-                                                    <DataTable.Row
-                                                        key={sessionIndex.toString()}
-                                                    >
-                                                        <DataTable.Cell>
-                                                            {session.date}
-                                                        </DataTable.Cell>
-                                                        <DataTable.Cell numeric>
-                                                            {
-                                                                session.min_age_limit
-                                                            }
-                                                        </DataTable.Cell>
-                                                        <DataTable.Cell numeric>
-                                                            {
-                                                                session.available_capacity
-                                                            }
-                                                        </DataTable.Cell>
-                                                    </DataTable.Row>
-                                                );
-                                            },
-                                        )}
-                                    </DataTable>
-                                </View>
-                            );
-                        })
-                    ) : (
-                        <>
-                            {slotsQuery?.isFetched && (
-                                <Text>No centers available</Text>
-                            )}
-                        </>
-                    )}
-                </ScrollView>
-            </View>
+                                    {center.sessions.map(
+                                        (session, sessionIndex) => {
+                                            return (
+                                                <DataTable.Row
+                                                    key={sessionIndex.toString()}
+                                                >
+                                                    <DataTable.Cell>
+                                                        {session.date}
+                                                    </DataTable.Cell>
+                                                    <DataTable.Cell numeric>
+                                                        {session.min_age_limit}
+                                                    </DataTable.Cell>
+                                                    <DataTable.Cell numeric>
+                                                        {
+                                                            session.available_capacity
+                                                        }
+                                                    </DataTable.Cell>
+                                                </DataTable.Row>
+                                            );
+                                        },
+                                    )}
+                                </DataTable>
+                            </View>
+                        );
+                    })
+                ) : (
+                    <>
+                        {slotsQuery?.isFetched && (
+                            <Text>No centers available</Text>
+                        )}
+                    </>
+                )}
+            </ScrollView>
+            <Attribution />
         </>
+    );
+};
+
+const Attribution = () => {
+    return (
+        <View style={styles.attributionContainer}>
+            <Text style={styles.attributionText}>
+                <Text
+                    onPress={async () => {
+                        await Linking.openURL(
+                            'https://twitter.com/regalstreak',
+                        );
+                    }}
+                >
+                    <Text style={{ fontWeight: '700' }}>{'</>'}</Text> with 💖
+                    by{' '}
+                    <Text
+                        style={{
+                            color: '#1e88e5',
+                            fontWeight: '700',
+                            textDecorationLine: 'underline',
+                        }}
+                    >
+                        Neil Agarwal
+                    </Text>
+                    .
+                </Text>{' '}
+                <Text
+                    onPress={async () => {
+                        await Linking.openURL(
+                            'https://github.com/regalstreak/vacslot',
+                        );
+                    }}
+                >
+                    Code open on{' '}
+                    <Text
+                        style={{
+                            color: '#333',
+                            fontWeight: '700',
+                            textDecorationLine: 'underline',
+                        }}
+                    >
+                        Github
+                    </Text>
+                </Text>
+            </Text>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        margin: 20,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: '700',
+    },
+    subTitle: {
+        fontSize: 16,
+        marginBottom: 20,
     },
     controlsRow: {
         flexDirection: 'row',
@@ -207,5 +267,13 @@ const styles = StyleSheet.create({
     },
     minAgeSwitchText: {
         fontSize: 16,
+    },
+    attributionContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 4,
+    },
+    attributionText: {
+        fontSize: 14,
     },
 });
