@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
-import { Button, DataTable, Surface, ToggleButton } from 'react-native-paper';
-import { Dropdown, IDropdownItem } from './components/Dropdown';
-import { useDistricts } from './hooks/useDistricts';
-import { useSlots } from './hooks/useSlots';
-import { useStates } from './hooks/useStates';
+import { Button, DataTable } from 'react-native-paper';
+import { Dropdown, IDropdownItem } from 'src/components/Dropdown';
+import { useDistricts } from 'src/hooks/useDistricts';
+import { useSlots } from 'src/hooks/useSlots';
+import { useStates } from 'src/hooks/useStates';
 
 export const Home = () => {
     const [selectedState, setSelectedState] = useState<IDropdownItem>();
