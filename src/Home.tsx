@@ -81,9 +81,12 @@ export const Home = () => {
                     </View>
                     {slotsQuery?.data?.centers &&
                     slotsQuery.data?.centers?.length > 0 ? (
-                        slotsQuery.data?.centers?.map(center => {
+                        slotsQuery.data?.centers?.map((center, centerIndex) => {
                             return (
-                                <View style={{ marginVertical: 20 }}>
+                                <View
+                                    key={centerIndex.toString()}
+                                    style={{ marginVertical: 20 }}
+                                >
                                     <Text style={styles.centerName}>
                                         {center.name}
                                     </Text>
@@ -100,10 +103,12 @@ export const Home = () => {
                                             </DataTable.Title>
                                         </DataTable.Header>
 
-                                        {center.sessions.map(session => {
-                                            return (
-                                                <>
-                                                    <DataTable.Row>
+                                        {center.sessions.map(
+                                            (session, sessionIndex) => {
+                                                return (
+                                                    <DataTable.Row
+                                                        key={sessionIndex.toString()}
+                                                    >
                                                         <DataTable.Cell>
                                                             {session.date}
                                                         </DataTable.Cell>
@@ -118,9 +123,9 @@ export const Home = () => {
                                                             }
                                                         </DataTable.Cell>
                                                     </DataTable.Row>
-                                                </>
-                                            );
-                                        })}
+                                                );
+                                            },
+                                        )}
                                     </DataTable>
                                 </View>
                             );
