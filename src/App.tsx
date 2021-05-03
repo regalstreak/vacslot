@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import BackgroundFetch from 'react-native-background-fetch';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { colors } from './constants/colors';
 import { Home } from './screens/Home';
 import { setNotificationStore } from './utils/asyncStorageUtils';
+import RNDisableBatteryOptimizationsAndroid from '@brandonhenao/react-native-disable-battery-optimizations-android';
+import { BatteryOptimisationModal } from './components/BatteryOptimisationModal';
 
 const queryClient = new QueryClient();
 
@@ -19,6 +21,11 @@ const theme = {
 };
 
 export const App = () => {
+    const [
+        isBatteryOptimisationModalVisible,
+        setIsBatteryOptimisationModalVisible,
+    ] = useState(false);
+
     useEffect(() => {
         const initBackgroundFetch = async () => {
             try {
@@ -59,9 +66,23 @@ export const App = () => {
         initBackgroundFetch();
     }, []);
 
+    useEffect(() => {
+        RNDisableBatteryOptimizationsAndroid.isBatteryOptimizationEnabled().then(
+            (isEnabled: boolean) => {
+                if (isEnabled) {
+                    setIsBatteryOptimisationModalVisible(true);
+                }
+            },
+        );
+    }, []);
+
     return (
         <QueryClientProvider client={queryClient}>
             <PaperProvider theme={theme}>
+                <BatteryOptimisationModal
+                    modalVisible={isBatteryOptimisationModalVisible}
+                    setModalVisible={setIsBatteryOptimisationModalVisible}
+                />
                 <Home />
             </PaperProvider>
         </QueryClientProvider>

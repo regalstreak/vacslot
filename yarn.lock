@@ -709,6 +709,11 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@brandonhenao/react-native-disable-battery-optimizations-android@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@brandonhenao/react-native-disable-battery-optimizations-android/-/react-native-disable-battery-optimizations-android-1.1.0.tgz#43970f4030c9421e518e9f738ef465864a43830d"
+  integrity sha512-3DKjBySxHBJq9My7I8uYkdwzGYD2er/L7fwI/hJ6YqzsBL4L1CV/DDy16uW6WVCHCNQA8YDhRyxxAnUKuY1sXw==
+
 "@callstack/react-theme-provider@^3.0.5":
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/@callstack/react-theme-provider/-/react-theme-provider-3.0.5.tgz#a173e455e9603c9c45357a3b6ace1273086527ca"
