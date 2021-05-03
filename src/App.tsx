@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import BackgroundFetch from 'react-native-background-fetch';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { Home } from './src/Home';
+import { Home } from './screens/Home';
 import PushNotification from 'react-native-push-notification';
 
 const queryClient = new QueryClient();

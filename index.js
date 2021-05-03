@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import { LogBox, Platform } from 'react-native';
 import { AppRegistry } from 'react-native';
-import { App, sendLocalNotification } from './App';
+import { App, sendLocalNotification } from './src/App';
 import { name as appName } from './app.json';
 
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
