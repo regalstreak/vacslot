@@ -7,7 +7,7 @@ import {
     setNotificationStore,
 } from './asyncStorageUtils';
 import BackgroundFetch, { HeadlessEvent } from 'react-native-background-fetch';
-import { sendLocalNotification } from './notifications';
+import { sendSlotFoundNotification } from './notifications';
 
 const backgroundUpdaterTask = async ({ taskId, timeout }: HeadlessEvent) => {
     if (timeout) {
@@ -43,8 +43,15 @@ const backgroundUpdaterTask = async ({ taskId, timeout }: HeadlessEvent) => {
     });
 
     if (slots.centers.length > 0) {
-        sendLocalNotification(taskId);
         const lastChecked = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
+        const numberOfSlots = slots.centers.reduce(
+            (accumulator, currentValue) => {
+                return accumulator + currentValue.sessions.length;
+            },
+            0,
+        );
+        const message = `Found ${numberOfSlots} slots for ${settings.district?.value}`;
+        sendSlotFoundNotification(message, lastChecked);
         setNotificationStore({ notified: true, lastChecked });
     }
 
