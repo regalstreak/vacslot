@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { DataTable, Divider } from 'react-native-paper';
 import { Dropdown, IDropdownItem } from 'src/components/Dropdown';
+import { colors } from 'src/constants/colors';
 import { useDistricts } from 'src/hooks/useDistricts';
 import { useSlots } from 'src/hooks/useSlots';
 import { useStates } from 'src/hooks/useStates';
@@ -52,23 +53,27 @@ export const Home = () => {
 
     useEffect(() => {
         const setLastCheckedDate = async () => {
-            const notificationStore: INotificationStore = await getAsyncStorageItem(
-                AsyncStorageKeys.NOTIFICATION,
-            );
-            setLastChecked(notificationStore.lastChecked);
+            try {
+                const notificationStore: INotificationStore = await getAsyncStorageItem(
+                    AsyncStorageKeys.NOTIFICATION,
+                );
+                setLastChecked(notificationStore.lastChecked);
+            } catch (error) {}
         };
         setLastCheckedDate();
     }, []);
 
     useEffect(() => {
         const getSettings = async () => {
-            const settingsStore: ISettingsStore = await getAsyncStorageItem(
-                AsyncStorageKeys.SETTINGS,
-            );
-            setSelectedState(settingsStore.state);
-            setSelectedDistrict(settingsStore.district);
-            setHideAbove45(settingsStore.hideAbove45);
-            setNotificationsEnabled(settingsStore.notificationsEnabled);
+            try {
+                const settingsStore: ISettingsStore = await getAsyncStorageItem(
+                    AsyncStorageKeys.SETTINGS,
+                );
+                setSelectedState(settingsStore.state);
+                setSelectedDistrict(settingsStore.district);
+                setHideAbove45(settingsStore.hideAbove45);
+                setNotificationsEnabled(settingsStore.notificationsEnabled);
+            } catch (error) {}
         };
 
         getSettings();
@@ -118,6 +123,7 @@ export const Home = () => {
                     <Switch
                         onValueChange={setHideAbove45}
                         value={hideAbove45}
+                        thumbColor={colors.secondaryLight}
                     />
                 </View>
                 <View style={styles.minAgeSwitch}>
@@ -127,6 +133,7 @@ export const Home = () => {
                     <Switch
                         onValueChange={setNotificationsEnabled}
                         value={notificationsEnabled}
+                        thumbColor={colors.secondaryLight}
                     />
                 </View>
                 {lastChecked && <Text>Last Checked: {lastChecked} </Text>}
@@ -206,7 +213,7 @@ const Attribution = () => {
                     by{' '}
                     <Text
                         style={{
-                            color: '#1e88e5',
+                            color: colors.secondary,
                             fontWeight: '700',
                             textDecorationLine: 'underline',
                         }}
@@ -225,7 +232,7 @@ const Attribution = () => {
                     Code open on{' '}
                     <Text
                         style={{
-                            color: '#333',
+                            color: colors.textGray,
                             fontWeight: '700',
                             textDecorationLine: 'underline',
                         }}

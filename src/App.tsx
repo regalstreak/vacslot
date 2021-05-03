@@ -1,11 +1,22 @@
 import React, { useEffect } from 'react';
 import BackgroundFetch from 'react-native-background-fetch';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { colors } from './constants/colors';
 import { Home } from './screens/Home';
 import { setNotificationStore } from './utils/asyncStorageUtils';
 
 const queryClient = new QueryClient();
+
+const theme = {
+    ...DefaultTheme,
+    roundness: 2,
+    colors: {
+        ...DefaultTheme.colors,
+        primary: colors.secondary,
+        accent: colors.secondary,
+    },
+};
 
 export const App = () => {
     useEffect(() => {
@@ -50,7 +61,7 @@ export const App = () => {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <PaperProvider>
+            <PaperProvider theme={theme}>
                 <Home />
             </PaperProvider>
         </QueryClientProvider>

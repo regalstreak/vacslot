@@ -1,3 +1,4 @@
+import { colors } from './../constants/colors';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { Platform } from 'react-native';
 import PushNotification from 'react-native-push-notification';
@@ -54,7 +55,7 @@ export const sendSlotFoundNotification = (
         channelId: NOTIFICATIONS.SLOTS.channelId,
         smallIcon: 'ic_notification',
         subText: dateString,
-        color: 'blue',
+        color: colors.secondary,
         vibration: 300,
         visibility: 'public',
         ignoreInForeground: false,
