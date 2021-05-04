@@ -24,10 +24,7 @@ const backgroundUpdaterTask = async ({ taskId, timeout }: HeadlessEvent) => {
         AsyncStorageKeys.SETTINGS,
     );
 
-    if (
-        notificationStore?.notified === true ||
-        !settingsStore?.notificationsEnabled
-    ) {
+    if (notificationStore?.notified || !settingsStore?.notificationsEnabled) {
         BackgroundFetch.finish(taskId);
         return;
     }
@@ -51,7 +48,9 @@ const backgroundUpdaterTask = async ({ taskId, timeout }: HeadlessEvent) => {
             },
             0,
         );
-        const message = `Found ${numberOfSlots} slots for ${settings.district?.value}`;
+        const message = `Found ${numberOfSlots} slot${
+            numberOfSlots > 1 ? 's' : ''
+        } for ${settings.district?.value}`;
         sendSlotFoundNotification(message, lastChecked);
         setNotificationStore({ notified: true, lastChecked });
     }

@@ -63,17 +63,19 @@ export interface INotificationStore {
 export const setNotificationStore = async (
     notificationStore: INotificationStore,
 ) => {
-    try {
-        if (!notificationStore.lastChecked) {
-            notificationStore.lastChecked = await (
-                await getAsyncStorageItem(AsyncStorageKeys.NOTIFICATION)
-            ).lastChecked;
-        }
-        await setAsyncStorageItem(
-            AsyncStorageKeys.NOTIFICATION,
-            notificationStore,
-        );
-    } catch (error) {}
+    const currentNotificationStore: INotificationStore = await getAsyncStorageItem(
+        AsyncStorageKeys.NOTIFICATION,
+    );
+
+    const notificationStoreToSet: INotificationStore = {
+        notified: notificationStore.notified,
+        lastChecked: currentNotificationStore?.lastChecked,
+    };
+
+    await setAsyncStorageItem(
+        AsyncStorageKeys.NOTIFICATION,
+        notificationStoreToSet,
+    );
 };
 
 export interface ISettingsStore {
