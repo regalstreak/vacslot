@@ -7,6 +7,7 @@ import { Home } from './screens/Home';
 import { setNotificationStore } from './utils/asyncStorageUtils';
 import RNDisableBatteryOptimizationsAndroid from '@brandonhenao/react-native-disable-battery-optimizations-android';
 import { BatteryOptimisationModal } from './components/BatteryOptimisationModal';
+import CodePush from 'react-native-code-push';
 
 const queryClient = new QueryClient();
 
@@ -20,7 +21,7 @@ const theme = {
     },
 };
 
-export const App = () => {
+const App = () => {
     const [
         isBatteryOptimisationModalVisible,
         setIsBatteryOptimisationModalVisible,
@@ -88,3 +89,5 @@ export const App = () => {
         </QueryClientProvider>
     );
 };
+
+export default CodePush(App);
