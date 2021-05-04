@@ -8,6 +8,7 @@ import {
 } from './asyncStorageUtils';
 import BackgroundFetch, { HeadlessEvent } from 'react-native-background-fetch';
 import { sendSlotFoundNotification } from './notifications';
+import dayjs from 'dayjs';
 
 const backgroundUpdaterTask = async ({ taskId, timeout }: HeadlessEvent) => {
     if (timeout) {
@@ -43,7 +44,7 @@ const backgroundUpdaterTask = async ({ taskId, timeout }: HeadlessEvent) => {
     });
 
     if (slots.centers.length > 0) {
-        const lastChecked = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
+        const lastChecked = dayjs().format('ddd, MMM D, YYYY h:mm A');
         const numberOfSlots = slots.centers.reduce(
             (accumulator, currentValue) => {
                 return accumulator + currentValue.sessions.length;

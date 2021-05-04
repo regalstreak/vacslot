@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import { IDistrict } from './useDistricts';
 import { API_BASE_URL, API_ENDPOINTS, API_HEADERS } from './../constants/api';
+import dayjs from 'dayjs';
 
 export interface ISession {
     session_id: string;
@@ -43,14 +44,7 @@ export const fetchSlots = async ({
     pinCode,
     hideAbove45,
 }: ISlotParams): Promise<IFetchSlots> => {
-    const date = new Date()
-        .toLocaleDateString('en-in', {
-            day: '2-digit',
-            year: 'numeric',
-            month: '2-digit',
-        })
-        .split('/')
-        .join('-');
+    const date = dayjs().format('DD-MM-YYYY');
 
     let slotEndpoint: string = '';
     let queryParams = new URLSearchParams({

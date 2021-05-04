@@ -18,6 +18,7 @@
     "appcenter": "^4.1.0",
     "appcenter-analytics": "^4.1.0",
     "appcenter-crashes": "^4.1.0",
+    "dayjs": "^1.10.4",
     "lodash.debounce": "^4.0.8",
     "react": "17.0.1",
     "react-native": "0.64.0",
