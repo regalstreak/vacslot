@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
+    Appearance,
     Linking,
     ScrollView,
     StyleSheet,
     Switch,
-    Text,
     View,
 } from 'react-native';
-import { DataTable, Divider } from 'react-native-paper';
+import { DarkTheme, DataTable, Divider, Text } from 'react-native-paper';
 import { Dropdown, IDropdownItem } from 'src/components/Dropdown';
 import { colors } from 'src/constants/colors';
 import { useDistricts } from 'src/hooks/useDistricts';
@@ -237,7 +237,10 @@ const Attribution = () => {
                     Code open on{' '}
                     <Text
                         style={{
-                            color: colors.textGray,
+                            color:
+                                Appearance.getColorScheme() === 'light'
+                                    ? colors.textGray
+                                    : DarkTheme.colors.text,
                             fontWeight: '700',
                             textDecorationLine: 'underline',
                         }}

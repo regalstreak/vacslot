@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import {
     Menu,
+    Surface,
     TextInput as PaperTextInput,
     useTheme,
 } from 'react-native-paper';
@@ -117,7 +118,6 @@ export const Dropdown = (props: IDropdownProps) => {
         return {
             maxHeight: dropDownContainerMaxHeight || 200,
             position: 'absolute',
-            backgroundColor: 'white',
             left: inputLayout?.x,
             width: inputLayout?.width,
             top: inputLayout?.y + inputLayout?.height,
@@ -177,24 +177,28 @@ export const Dropdown = (props: IDropdownProps) => {
                 >
                     {filterItems?.map((item, index) => {
                         return (
-                            <Menu.Item
-                                key={index}
-                                titleStyle={{
-                                    color:
-                                        selectedDropdownItem?.value ===
-                                        item.value
-                                            ? activeColor ||
-                                              (theme || activeTheme).colors
-                                                  .primary
-                                            : (theme || activeTheme).colors
-                                                  .text,
-                                }}
-                                onPress={() => {
-                                    onMenuItemPress(item);
-                                }}
-                                title={item.custom ?? item.label ?? item.value}
-                                style={{ maxWidth: inputLayout?.width }}
-                            />
+                            <Surface key={index}>
+                                <Menu.Item
+                                    key={index}
+                                    titleStyle={{
+                                        color:
+                                            selectedDropdownItem?.value ===
+                                            item.value
+                                                ? activeColor ||
+                                                  (theme || activeTheme).colors
+                                                      .primary
+                                                : (theme || activeTheme).colors
+                                                      .text,
+                                    }}
+                                    onPress={() => {
+                                        onMenuItemPress(item);
+                                    }}
+                                    title={
+                                        item.custom ?? item.label ?? item.value
+                                    }
+                                    style={{ maxWidth: inputLayout?.width }}
+                                />
+                            </Surface>
                         );
                     })}
                 </ScrollView>
