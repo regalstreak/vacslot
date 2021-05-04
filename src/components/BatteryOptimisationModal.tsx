@@ -26,7 +26,11 @@ export const BatteryOptimisationModal = ({
                         then <Text style={styles.bold}>Don't Optimise</Text>.{' '}
                         {'\n\n'}
                         Clicking <Text style={styles.bold}>OK</Text> will take
-                        you to Settings screen
+                        you to{' '}
+                        <Text style={styles.bold}>
+                            Battery Optimisation Settings
+                        </Text>
+                        .
                     </Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions>
