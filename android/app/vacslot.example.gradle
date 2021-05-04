@@ -1,0 +1,27 @@
+android {
+    signingConfigs {
+        release {
+            storeFile file('yourkeystorename.keystore')
+            storePassword "storepassword"
+            keyAlias "keyalias"
+            keyPassword "keypassword"
+        }
+        releaseStaging {
+            storeFile file('yourkeystorename.keystore')
+            storePassword "storepassword"
+            keyAlias "keyalias"
+            keyPassword "keypassword"
+        }
+    }
+    buildTypes {
+        debug {
+            resValue "string", "CodePushDeploymentKey", '""'
+        }
+        releaseStaging {
+            resValue "string", "CodePushDeploymentKey", '"stagingDeploymentKey"'
+        }
+        release {
+            resValue "string", "CodePushDeploymentKey", '"releaseDeploymentKey"'
+        }
+    }
+}
