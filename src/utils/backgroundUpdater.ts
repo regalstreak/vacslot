@@ -25,8 +25,8 @@ const backgroundUpdaterTask = async ({ taskId, timeout }: HeadlessEvent) => {
     );
 
     if (
-        notificationStore.notified === true ||
-        !settingsStore.notificationsEnabled
+        notificationStore?.notified === true ||
+        !settingsStore?.notificationsEnabled
     ) {
         BackgroundFetch.finish(taskId);
         return;
